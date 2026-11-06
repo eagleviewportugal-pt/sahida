@@ -146,6 +146,10 @@
   footer{background:var(--ink);color:#d8cfc3;padding:32px 0;font-size:.85rem}
   footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   footer a{color:#fff}
+  footer .wrap{align-items:center}
+  footer .ev{display:inline-block;vertical-align:middle;margin-left:8px;opacity:.9;transition:opacity .2s}
+  footer .ev:hover{opacity:1}
+  footer .ev img{height:46px;width:auto}
 </style>
 </head>
 <body>
@@ -400,7 +404,7 @@ const T = {
     err_big:"Para grupos acima de {n} pessoas, ligue-nos por favor.", err_consent:"Precisamos da sua autorização para tratar a reserva.",
     err_send:"Não foi possível enviar. Tente novamente ou ligue-nos.", sending:"A enviar…",
     contact_eyebrow:"Visite-nos", contact_title:"Contactos", c_where:"Onde estamos", c_directions:"Como chegar", c_hours:"Horário", c_talk:"Fale connosco",
-    footer_credit:'Site por <a href="https://www.eagleviewportugal.com" target="_blank" rel="noopener">Eagle View</a>'
+    footer_credit:'Site por <a class="ev" href="https://www.eagleviewportugal.com" target="_blank" rel="noopener"><img src="img/eagleview.png" alt="Eagleview" width="78" height="46"></a>'
   },
   en:{
     nav_about:"About", nav_menu:"Menu", nav_book:"Book", nav_contact:"Contact",
@@ -423,7 +427,7 @@ const T = {
     err_big:"For groups of more than {n}, please call us.", err_consent:"We need your permission to process the booking.",
     err_send:"We couldn't send it. Please try again or call us.", sending:"Sending…",
     contact_eyebrow:"Visit us", contact_title:"Contact", c_where:"Find us", c_directions:"Get directions", c_hours:"Opening hours", c_talk:"Talk to us",
-    footer_credit:'Website by <a href="https://www.eagleviewportugal.com" target="_blank" rel="noopener">Eagle View</a>'
+    footer_credit:'Website by <a class="ev" href="https://www.eagleviewportugal.com" target="_blank" rel="noopener"><img src="img/eagleview.png" alt="Eagleview" width="78" height="46"></a>'
   },
   es:{
     nav_about:"Nosotros", nav_menu:"Carta", nav_book:"Reservas", nav_contact:"Contacto",
@@ -446,7 +450,7 @@ const T = {
     err_big:"Para grupos de más de {n} personas, llámenos por favor.", err_consent:"Necesitamos su autorización para tramitar la reserva.",
     err_send:"No se ha podido enviar. Inténtelo de nuevo o llámenos.", sending:"Enviando…",
     contact_eyebrow:"Visítenos", contact_title:"Contacto", c_where:"Dónde estamos", c_directions:"Cómo llegar", c_hours:"Horario", c_talk:"Hable con nosotros",
-    footer_credit:'Web por <a href="https://www.eagleviewportugal.com" target="_blank" rel="noopener">Eagle View</a>'
+    footer_credit:'Web por <a class="ev" href="https://www.eagleviewportugal.com" target="_blank" rel="noopener"><img src="img/eagleview.png" alt="Eagleview" width="78" height="46"></a>'
   }
 };
 
