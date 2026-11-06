@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SAHIDA · Restaurante</title>
+<meta name="description" content="Restaurante SAHIDA — reserve a sua mesa online.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500&family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6f1e9; --surface:#fffdf8; --ink:#2a2622; --muted:#6f655b;
+    --accent:#4a3324; --accent-ink:#ffffff; --clay:#a5623f; --line:#e3d9ca;
+    --ok:#3f6b46; --err:#9b3b2f;
+    --radius:14px; --max:1120px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,sans-serif}
+  img{max-width:100%;display:block}
+  a{color:inherit}
+  h1,h2,h3{font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;line-height:1.1;margin:0 0 .5em}
+  h2{font-size:clamp(2rem,4vw,2.8rem)}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 16px}
+  section{padding:72px 0;scroll-margin-top:64px}
+  .eyebrow{text-transform:uppercase;letter-spacing:.18em;font-size:.75rem;color:var(--clay);font-weight:600;margin-bottom:.6em}
+
+  /* Header */
+  header{position:fixed;inset:0 0 auto 0;z-index:20;transition:background .3s,box-shadow .3s}
+  header.solid{background:rgba(246,241,233,.96);box-shadow:0 1px 0 var(--line);backdrop-filter:blur(6px)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{font-family:Barlow,"DIN Alternate",sans-serif;font-size:1.45rem;letter-spacing:.14em;font-weight:500;text-decoration:none;color:#fff}
+  header.solid .logo{color:var(--ink)}
+  .links{display:flex;gap:22px;align-items:center}
+  .links a{text-decoration:none;font-size:.92rem;color:#fff}
+  header.solid .links a{color:var(--ink)}
+  .lang{display:flex;gap:4px}
+  .lang button{background:transparent;border:1px solid rgba(255,255,255,.5);color:#fff;border-radius:999px;padding:3px 9px;font:600 .72rem Inter,sans-serif;cursor:pointer}
+  header.solid .lang button{border-color:var(--line);color:var(--ink)}
+  .lang button[aria-pressed="true"]{background:#fff;color:var(--ink)}
+  header.solid .lang button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .menu-links{display:flex;gap:22px}
+  @media (max-width:760px){.menu-links{display:none}}
+
+  /* Hero */
+  .hero{min-height:92vh;display:flex;align-items:flex-end;color:#fff;position:relative;
+    background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.55)),url(img/carrossel-1.jpg) center 55%/cover,linear-gradient(135deg,#4d5a35,#a5623f)}
+  .hero .wrap{padding-bottom:80px;width:100%}
+  .hero h1{font-family:Barlow,"DIN Alternate",sans-serif;font-weight:500;font-size:clamp(3.4rem,11vw,7rem);letter-spacing:.1em;margin:0;line-height:1}
+  .hero p{font-size:1.15rem;max-width:520px;opacity:.95}
+  .btn{display:inline-block;background:var(--accent);color:var(--accent-ink);border:0;border-radius:999px;padding:14px 28px;font:600 .95rem Inter,sans-serif;text-decoration:none;cursor:pointer;transition:transform .15s,opacity .15s}
+  .btn:hover{transform:translateY(-1px)}
+  .btn.light{background:#fff;color:var(--ink)}
+  .btn[disabled]{opacity:.6;cursor:wait}
+
+  /* About */
+  .about{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:center}
+  .about .ph{aspect-ratio:4/5;border-radius:var(--radius)}
+  @media (max-width:760px){.about{grid-template-columns:1fr;gap:28px}}
+
+  /* Fotos */
+  .ph{border-radius:var(--radius);overflow:hidden;background:#c9b79c}
+  .ph img{width:100%;height:100%;object-fit:cover;display:block}
+  /* Gallery */
+  .gallery{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:220px;grid-auto-flow:dense;gap:12px;margin-top:40px}
+  .gallery .ph{border-radius:10px}
+  .gallery .tall{grid-row:span 2}
+  .gallery .wide{grid-column:span 2}
+  @media (max-width:760px){.gallery{grid-template-columns:repeat(2,1fr);grid-auto-rows:150px}}
+
+  /* Avaliações */
+  .reviews{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2.2fr);gap:40px;align-items:start}
+  @media (max-width:860px){.reviews{grid-template-columns:1fr;gap:24px}}
+  .score{display:flex;flex-direction:column;gap:6px}
+  .score-num{font-family:Barlow,"DIN Alternate",sans-serif;font-size:4.5rem;font-weight:500;line-height:1;font-variant-numeric:tabular-nums}
+  .stars{position:relative;display:inline-block;font-size:1.4rem;letter-spacing:3px;line-height:1;color:var(--line)}
+  .stars span{position:absolute;inset:0 auto 0 0;overflow:hidden;white-space:nowrap;color:#c8902e}
+  .score small{color:var(--muted)}
+  .quotes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+  @media (max-width:860px){.quotes{grid-template-columns:1fr}}
+  .quote{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;margin:0;display:flex;flex-direction:column;gap:12px}
+  .quote blockquote{margin:0;font-family:"Cormorant Garamond",Georgia,serif;font-size:1.25rem;line-height:1.35}
+  .quote figcaption{font-size:.8rem;color:var(--muted)}
+  .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--ink);padding:10px 20px;margin-top:10px;align-self:flex-start}
+
+  /* Menu */
+  .menu{background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:28px}
+  @media (max-width:860px){.menu-grid{grid-template-columns:1fr}}
+  .menu-cat h3{font-size:1.6rem;border-bottom:1px solid var(--line);padding-bottom:.4em}
+  .dish{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px dashed var(--line)}
+  .dish small{display:block;color:var(--muted)}
+  .price{white-space:nowrap;font-weight:600}
+  .note{color:var(--muted);font-size:.9rem;margin-top:24px}
+
+  /* Reservation */
+  .reserve{display:grid;grid-template-columns:1fr 1.3fr;gap:48px}
+  @media (max-width:860px){.reserve{grid-template-columns:1fr;gap:24px}}
+  form{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:28px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media (max-width:560px){form{grid-template-columns:1fr;padding:20px}}
+  .full{grid-column:1/-1}
+  label{display:block;font-size:.82rem;font-weight:600;margin-bottom:6px}
+  input,select,textarea{width:100%;font:16px Inter,sans-serif;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+  textarea{min-height:90px;resize:vertical}
+  .check{display:flex;gap:10px;align-items:flex-start;font-size:.85rem;color:var(--muted)}
+  .check input{width:auto;margin-top:4px}
+  .hp{position:absolute;left:-5000px;width:1px;height:1px;overflow:hidden}
+  .msg{grid-column:1/-1;border-radius:10px;padding:16px;display:none}
+  .msg.ok{display:block;background:#e7efe3;color:var(--ok)}
+  .msg.err{display:block;background:#f6e3df;color:var(--err)}
+  /* Calendar + time slots */
+  .cal{border:1px solid var(--line);border-radius:12px;background:#fff;padding:12px}
+  .cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-weight:600}
+  .cal-nav{border:1px solid var(--line);background:#fff;border-radius:999px;width:34px;height:34px;font-size:1.1rem;cursor:pointer;color:var(--ink)}
+  .cal-nav:disabled{opacity:.3;cursor:default}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center}
+  .cal-dow{font-size:.7rem;color:var(--muted);font-weight:600;padding:4px 0;text-transform:uppercase}
+  .cal-day{aspect-ratio:1;min-height:34px;border:0;border-radius:8px;background:transparent;font:500 .92rem Inter,sans-serif;cursor:pointer;color:var(--ink);padding:0}
+  .cal-day:hover:not(:disabled){background:var(--bg)}
+  .cal-day:disabled{color:#cdc3b6;cursor:default}
+  .cal-day.closed:disabled{text-decoration:line-through}
+  .cal-day.today{box-shadow:inset 0 0 0 1.5px var(--accent)}
+  .cal-day.sel{background:var(--accent);color:#fff}
+  .picked{margin:0 0 10px;font-weight:600;min-height:1.6em}
+  .slots{display:flex;flex-wrap:wrap;gap:8px}
+  .slot-label{width:100%;font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;color:var(--clay);font-weight:600;margin-top:6px}
+  .slot{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font:500 .9rem Inter,sans-serif;cursor:pointer;color:var(--ink)}
+  .slot:hover:not(:disabled){border-color:var(--accent)}
+  .slot:disabled{opacity:.35;cursor:default}
+  .slot.sel{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .slots-empty{color:var(--muted);font-size:.9rem}
+  .info-list{list-style:none;padding:0;margin:20px 0 0}
+  .info-list li{padding:10px 0;border-bottom:1px solid var(--line)}
+  .info-list strong{display:block;font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;color:var(--clay)}
+
+  /* Contact */
+  .contact{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  @media (max-width:760px){.contact{grid-template-columns:1fr}}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px}
+  .hours{width:100%;border-collapse:collapse;font-size:.95rem}
+  .hours td{padding:4px 0}
+  .hours td:last-child{text-align:right;color:var(--muted)}
+
+  footer{background:var(--ink);color:#d8cfc3;padding:32px 0;font-size:.85rem}
+  footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  footer a{color:#fff}
+</style>
+</head>
+<body>
+
+<header id="top">
+  <div class="wrap nav">
+    <a class="logo" href="#">SAHIDA</a>
+    <div class="links">
+      <nav class="menu-links">
+        <a href="#sobre" data-i18n="nav_about"></a>
+        <a href="#menu" data-i18n="nav_menu"></a>
+        <a href="#reservas" data-i18n="nav_book"></a>
+        <a href="#contactos" data-i18n="nav_contact"></a>
+      </nav>
+      <div class="lang" role="group" aria-label="Idioma">
+        <button type="button" data-lang="pt">PT</button>
+        <button type="button" data-lang="en">EN</button>
+        <button type="button" data-lang="es">ES</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow" style="color:#fff;opacity:.85" data-i18n="hero_eyebrow"></p>
+    <h1>SAHIDA</h1>
+    <p data-i18n="hero_text"></p>
+    <p style="margin-top:28px"><a class="btn light" href="#reservas" data-i18n="hero_cta"></a></p>
+  </div>
+</section>
+
+<section id="sobre">
+  <div class="wrap about">
+    <div>
+      <p class="eyebrow" data-i18n="about_eyebrow"></p>
+      <h2 data-i18n="about_title"></h2>
+      <p data-i18n="about_p1"></p>
+      <p data-i18n="about_p2"></p>
+    </div>
+    <div class="ph" style="aspect-ratio:4/5"><img src="img/interior-1.jpg" alt="Sala com lareira do SAHIDA" loading="lazy"></div>
+  </div>
+  <div class="wrap">
+    <div class="gallery">
+      <div class="ph tall"><img src="img/patio-2.jpg" alt="Pátio florido" loading="lazy"></div>
+      <div class="ph "><img src="img/carrossel-2.jpg" alt="Terraço à noite" loading="lazy"></div>
+      <div class="ph "><img src="img/carrossel-5.jpg" alt="Sala com banco vermelho" loading="lazy"></div>
+      <div class="ph wide"><img src="img/grupos-2.jpg" alt="Mesa de grupo no alpendre" loading="lazy"></div>
+      <div class="ph tall"><img src="img/carrossel-3.jpg" alt="Pátio com fonte" loading="lazy"></div>
+      <div class="ph tall"><img src="img/varanda.jpg" alt="Varanda com vista" loading="lazy"></div>
+      <div class="ph "><img src="img/interior-2.jpg" alt="Sala principal" loading="lazy"></div>
+      <div class="ph "><img src="img/carrossel-4.jpg" alt="Sala abobadada" loading="lazy"></div>
+      <div class="ph wide"><img src="img/interior-3.jpg" alt="Mesa posta" loading="lazy"></div>
+      <div class="ph "><img src="img/patio-3.jpg" alt="Pátio com parreira" loading="lazy"></div>
+      <div class="ph "><img src="img/grupos-1.jpg" alt="Jantar de grupo" loading="lazy"></div>
+    </div>
+  </div>
+</section>
+
+<section id="avaliacoes" style="padding-top:0">
+  <div class="wrap">
+    <p class="eyebrow" data-i18n="rev_eyebrow"></p>
+    <h2 data-i18n="rev_title"></h2>
+    <div class="reviews" style="margin-top:28px">
+      <div class="score">
+        <span class="score-num" id="ratingNum"></span>
+        <span class="stars" id="ratingStars" aria-hidden="true">★★★★★<span>★★★★★</span></span>
+        <small id="ratingCount"></small>
+        <a class="btn ghost" id="reviewsLink" href="#" target="_blank" rel="noopener" data-i18n="rev_link"></a>
+      </div>
+      <div class="quotes" id="quotes"></div>
+    </div>
+  </div>
+</section>
+
+<section id="menu" class="menu">
+  <div class="wrap">
+    <p class="eyebrow" data-i18n="menu_eyebrow"></p>
+    <h2 data-i18n="menu_title"></h2>
+    <div class="menu-grid" id="menuGrid"></div>
+    <p class="note" data-i18n="menu_note"></p>
+  </div>
+</section>
+
+<section id="reservas">
+  <div class="wrap reserve">
+    <div>
+      <p class="eyebrow" data-i18n="book_eyebrow"></p>
+      <h2 data-i18n="book_title"></h2>
+      <p data-i18n="book_text"></p>
+      <ul class="info-list">
+        <li><strong data-i18n="book_groups_t"></strong><span data-i18n="book_groups"></span></li>
+        <li><strong data-i18n="book_phone_t"></strong><a id="phoneLink" href="#"></a></li>
+      </ul>
+    </div>
+
+    <form id="bookingForm" novalidate>
+      <div class="full">
+        <label for="f-name" data-i18n="f_name"></label>
+        <input id="f-name" name="name" autocomplete="name" required maxlength="80">
+      </div>
+      <div>
+        <label for="f-email" data-i18n="f_email"></label>
+        <input id="f-email" name="email" type="email" autocomplete="email" required maxlength="120">
+      </div>
+      <div>
+        <label for="f-phone" data-i18n="f_phone"></label>
+        <input id="f-phone" name="phone" type="tel" autocomplete="tel" required maxlength="30">
+      </div>
+      <div>
+        <label id="lbl-date" data-i18n="f_date"></label>
+        <div class="cal" id="cal" role="group" aria-labelledby="lbl-date"></div>
+        <input type="hidden" id="f-date" name="date">
+      </div>
+      <div>
+        <label id="lbl-time" data-i18n="f_time"></label>
+        <p class="picked" id="pickedDate"></p>
+        <div class="slots" id="slots" role="group" aria-labelledby="lbl-time"></div>
+        <input type="hidden" id="f-time" name="time">
+      </div>
+      <div class="full">
+        <label for="f-people" data-i18n="f_people"></label>
+        <select id="f-people" name="people" required></select>
+      </div>
+      <div class="full">
+        <label for="f-notes" data-i18n="f_notes"></label>
+        <textarea id="f-notes" name="notes" maxlength="500"></textarea>
+      </div>
+      <div class="hp" aria-hidden="true">
+        <label for="f-website">Website</label>
+        <input id="f-website" name="website" tabindex="-1" autocomplete="off">
+      </div>
+      <label class="check full">
+        <input type="checkbox" id="f-consent" required>
+        <span data-i18n="f_consent"></span>
+      </label>
+      <div class="full">
+        <button class="btn" type="submit" id="submitBtn" data-i18n="f_submit"></button>
+      </div>
+      <div class="msg" id="formMsg" role="status" aria-live="polite"></div>
+    </form>
+  </div>
+</section>
+
+<section id="contactos" style="padding-top:0">
+  <div class="wrap">
+    <p class="eyebrow" data-i18n="contact_eyebrow"></p>
+    <h2 data-i18n="contact_title"></h2>
+    <div class="contact" style="margin-top:24px">
+      <div class="card">
+        <h3 data-i18n="c_where"></h3>
+        <p id="address"></p>
+        <a class="btn" id="mapsLink" href="#" target="_blank" rel="noopener" data-i18n="c_directions"></a>
+      </div>
+      <div class="card">
+        <h3 data-i18n="c_hours"></h3>
+        <table class="hours" id="hoursTable"></table>
+      </div>
+      <div class="card">
+        <h3 data-i18n="c_talk"></h3>
+        <p><a id="phoneLink2" href="#"></a><br><a id="emailLink" href="#"></a></p>
+        <p><a id="igLink" href="#" target="_blank" rel="noopener">Instagram</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="year"></span> SAHIDA</span>
+    <span data-i18n-html="footer_credit"></span>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   CONFIGURAÇÃO — editar aqui os dados do restaurante
+   ============================================================ */
+const SITE = {
+  // URL da Web App do Google Apps Script (ver INSTRUCOES.md).
+  // Enquanto estiver vazio, o formulário funciona em modo demonstração.
+  scriptUrl: "",
+
+  phone: "+351 968 808 075",
+  email: "",                           // vazio = não mostrar
+  instagram: "https://www.instagram.com/sahida.monsaraz/",
+  address: "Rua José Fernandes Caeiro, 5\n7200-175 Monsaraz",
+  mapsUrl: "https://www.google.com/maps/search/?api=1&query=SAHIDA%20Monsaraz&query_place_id=ChIJW6Q9B4M1Fw0Rti2sf1Z2svM",
+
+  // Horários de reserva (de 30 em 30 min). Ajustar ao restaurante.
+  lunch:  { from: "12:00", to: "13:30" },
+  dinner: { from: "19:00", to: "21:30" },
+  closedWeekdays: [1, 2],   // 0=domingo … 6=sábado → fecha segunda e terça
+  maxPeople: 12,        // acima disto: pedir contacto telefónico
+  maxDaysAhead: 90,
+
+  // Horário de funcionamento (Google)
+  hours: [
+    { days: { pt:"Quarta a domingo", en:"Wednesday to Sunday", es:"Miércoles a domingo" }, time: "12:00–14:00 · 19:00–22:00" },
+    { days: { pt:"Segunda e terça", en:"Monday & Tuesday", es:"Lunes y martes" }, time: { pt:"Encerrado", en:"Closed", es:"Cerrado" } }
+  ]
+};
+
+/* Avaliações do Google (atualizar de vez em quando) */
+const REVIEWS = {
+  rating: 4.7, count: 306,
+  url: "https://www.google.com/maps/search/?api=1&query=SAHIDA%20Monsaraz&query_place_id=ChIJW6Q9B4M1Fw0Rti2sf1Z2svM",
+  quotes: [
+    "This restaurant is one of the finest. … The views are spectacular. The food is absolutely delicious.",
+    "Like a hidden gem with a small courtyard in the back which is very beautiful in the evening.",
+    "The views of the valley and castle are incredible. … The food was excellent."
+  ]
+};
+
+/* Menu — a substituir pelo menu real quando chegar. Mantém a estrutura. */
+const MENU = [
+  { cat:{pt:"Entradas",en:"Starters",es:"Entrantes"}, items:[
+    { name:{pt:"Prato de exemplo",en:"Sample dish",es:"Plato de ejemplo"}, desc:{pt:"Descrição curta",en:"Short description",es:"Descripción breve"}, price:"0,00 €" },
+    { name:{pt:"Prato de exemplo",en:"Sample dish",es:"Plato de ejemplo"}, desc:{pt:"Descrição curta",en:"Short description",es:"Descripción breve"}, price:"0,00 €" }
+  ]},
+  { cat:{pt:"Pratos principais",en:"Mains",es:"Principales"}, items:[
+    { name:{pt:"Prato de exemplo",en:"Sample dish",es:"Plato de ejemplo"}, desc:{pt:"Descrição curta",en:"Short description",es:"Descripción breve"}, price:"0,00 €" },
+    { name:{pt:"Prato de exemplo",en:"Sample dish",es:"Plato de ejemplo"}, desc:{pt:"Descrição curta",en:"Short description",es:"Descripción breve"}, price:"0,00 €" }
+  ]},
+  { cat:{pt:"Sobremesas",en:"Desserts",es:"Postres"}, items:[
+    { name:{pt:"Prato de exemplo",en:"Sample dish",es:"Plato de ejemplo"}, desc:{pt:"Descrição curta",en:"Short description",es:"Descripción breve"}, price:"0,00 €" }
+  ]}
+];
+
+/* ============================================================
+   TEXTOS (PT / EN / ES)
+   ============================================================ */
+const T = {
+  pt:{
+    nav_about:"Sobre", nav_menu:"Menu", nav_book:"Reservas", nav_contact:"Contactos",
+    hero_eyebrow:"Restaurante · Monsaraz", hero_text:"Cozinha tradicional alentejana dentro das muralhas de Monsaraz.", hero_cta:"Reservar mesa",
+    about_eyebrow:"O restaurante", about_title:"Uma casa para partilhar",
+    about_p1:"No coração da vila medieval de Monsaraz, o SAHIDA serve cozinha tradicional alentejana, acompanhada por uma boa carta de vinhos.",
+    about_p2:"Pode escolher a sala com lareira, o pátio escondido entre flores ou o terraço com vista sobre o Alqueva e o castelo. Também recebemos grupos.",
+    rev_eyebrow:"Avaliações", rev_title:"O que dizem os nossos clientes", rev_count:"{n} avaliações no Google", rev_link:"Ver todas no Google", rev_src:"Avaliação no Google · texto original", menu_eyebrow:"À mesa", menu_title:"Menu", menu_note:"Menu sujeito a alterações sazonais. Informe-nos de alergias ou restrições alimentares.",
+    book_eyebrow:"Reservas", book_title:"Reserve a sua mesa",
+    book_text:"Envie-nos o seu pedido. Respondemos o mais depressa possível para confirmar a reserva.",
+    book_groups_t:"Grupos", book_groups:"Para mais de 12 pessoas ou eventos, ligue-nos.", book_phone_t:"Telefone",
+    f_name:"Nome", f_email:"Email", f_phone:"Telefone", f_date:"Data", f_time:"Hora", f_people:"Número de pessoas",
+    f_notes:"Observações (alergias, cadeira de bebé, ocasião especial…)", f_submit:"Enviar pedido de reserva",
+    f_consent:"Autorizo o SAHIDA a usar estes dados apenas para gerir a minha reserva.",
+    f_pick_date:"Escolha primeiro o dia no calendário.", f_prev:"Mês anterior", f_next:"Mês seguinte", f_lunch:"Almoço", f_dinner:"Jantar", f_choose:"Escolher…", f_person:"pessoa", f_persons:"pessoas", f_more:"Mais de {n} — ligue-nos",
+    ok:"Obrigado! Recebemos o seu pedido. Entraremos em contacto para confirmar a sua reserva.",
+    demo:" (Modo demonstração: o pedido não foi enviado.)",
+    err_fields:"Por favor preencha todos os campos obrigatórios.", err_email:"O email não parece válido.",
+    err_closed:"Estamos fechados nesse dia. Escolha outra data, por favor.", err_past:"Escolha uma data a partir de hoje.",
+    err_big:"Para grupos acima de {n} pessoas, ligue-nos por favor.", err_consent:"Precisamos da sua autorização para tratar a reserva.",
+    err_send:"Não foi possível enviar. Tente novamente ou ligue-nos.", sending:"A enviar…",
+    contact_eyebrow:"Visite-nos", contact_title:"Contactos", c_where:"Onde estamos", c_directions:"Como chegar", c_hours:"Horário", c_talk:"Fale connosco",
+    footer_credit:'Site por <a href="https://www.eagleviewportugal.com" target="_blank" rel="noopener">Eagle View</a>'
+  },
+  en:{
+    nav_about:"About", nav_menu:"Menu", nav_book:"Book", nav_contact:"Contact",
+    hero_eyebrow:"Restaurant · Monsaraz", hero_text:"Traditional Alentejo cooking inside the walls of Monsaraz.", hero_cta:"Book a table",
+    about_eyebrow:"The restaurant", about_title:"A place to share",
+    about_p1:"In the heart of the medieval village of Monsaraz, SAHIDA serves traditional Alentejo cooking, with a good wine list to match.",
+    about_p2:"Choose the dining room by the fireplace, the courtyard tucked among the flowers, or the terrace overlooking Alqueva and the castle. Groups are welcome.",
+    rev_eyebrow:"Reviews", rev_title:"What our guests say", rev_count:"{n} reviews on Google", rev_link:"Read all on Google", rev_src:"Google review", menu_eyebrow:"At the table", menu_title:"Menu", menu_note:"Menu subject to seasonal changes. Please tell us about any allergies or dietary needs.",
+    book_eyebrow:"Bookings", book_title:"Book your table",
+    book_text:"Send us your request. We'll get back to you as soon as possible to confirm it.",
+    book_groups_t:"Groups", book_groups:"For more than 12 people or events, please call us.", book_phone_t:"Phone",
+    f_name:"Name", f_email:"Email", f_phone:"Phone", f_date:"Date", f_time:"Time", f_people:"Number of guests",
+    f_notes:"Notes (allergies, high chair, special occasion…)", f_submit:"Send booking request",
+    f_consent:"I allow SAHIDA to use this data only to manage my booking.",
+    f_pick_date:"Pick a day on the calendar first.", f_prev:"Previous month", f_next:"Next month", f_lunch:"Lunch", f_dinner:"Dinner", f_choose:"Choose…", f_person:"guest", f_persons:"guests", f_more:"More than {n} — call us",
+    ok:"Thank you! We've received your request. We'll be in touch to confirm your booking.",
+    demo:" (Demo mode: the request was not sent.)",
+    err_fields:"Please fill in all required fields.", err_email:"That email doesn't look valid.",
+    err_closed:"We're closed on that day. Please choose another date.", err_past:"Please choose a date from today onwards.",
+    err_big:"For groups of more than {n}, please call us.", err_consent:"We need your permission to process the booking.",
+    err_send:"We couldn't send it. Please try again or call us.", sending:"Sending…",
+    contact_eyebrow:"Visit us", contact_title:"Contact", c_where:"Find us", c_directions:"Get directions", c_hours:"Opening hours", c_talk:"Talk to us",
+    footer_credit:'Website by <a href="https://www.eagleviewportugal.com" target="_blank" rel="noopener">Eagle View</a>'
+  },
+  es:{
+    nav_about:"Nosotros", nav_menu:"Carta", nav_book:"Reservas", nav_contact:"Contacto",
+    hero_eyebrow:"Restaurante · Monsaraz", hero_text:"Cocina tradicional alentejana dentro de las murallas de Monsaraz.", hero_cta:"Reservar mesa",
+    about_eyebrow:"El restaurante", about_title:"Una casa para compartir",
+    about_p1:"En el corazón de la villa medieval de Monsaraz, SAHIDA sirve cocina tradicional alentejana, acompañada de una buena carta de vinos.",
+    about_p2:"Elija el comedor con chimenea, el patio escondido entre flores o la terraza con vistas al Alqueva y al castillo. También recibimos grupos.",
+    rev_eyebrow:"Opiniones", rev_title:"Lo que dicen nuestros clientes", rev_count:"{n} opiniones en Google", rev_link:"Ver todas en Google", rev_src:"Opinión en Google · texto original", menu_eyebrow:"A la mesa", menu_title:"Carta", menu_note:"Carta sujeta a cambios de temporada. Infórmenos de alergias o restricciones alimentarias.",
+    book_eyebrow:"Reservas", book_title:"Reserve su mesa",
+    book_text:"Envíenos su solicitud. Le responderemos lo antes posible para confirmar la reserva.",
+    book_groups_t:"Grupos", book_groups:"Para más de 12 personas o eventos, llámenos.", book_phone_t:"Teléfono",
+    f_name:"Nombre", f_email:"Email", f_phone:"Teléfono", f_date:"Fecha", f_time:"Hora", f_people:"Número de personas",
+    f_notes:"Observaciones (alergias, trona, ocasión especial…)", f_submit:"Enviar solicitud de reserva",
+    f_consent:"Autorizo a SAHIDA a usar estos datos solo para gestionar mi reserva.",
+    f_pick_date:"Elija primero el día en el calendario.", f_prev:"Mes anterior", f_next:"Mes siguiente", f_lunch:"Comida", f_dinner:"Cena", f_choose:"Elegir…", f_person:"persona", f_persons:"personas", f_more:"Más de {n} — llámenos",
+    ok:"¡Gracias! Hemos recibido su solicitud. Nos pondremos en contacto para confirmar su reserva.",
+    demo:" (Modo demostración: la solicitud no se ha enviado.)",
+    err_fields:"Por favor, rellene todos los campos obligatorios.", err_email:"El email no parece válido.",
+    err_closed:"Ese día estamos cerrados. Elija otra fecha, por favor.", err_past:"Elija una fecha a partir de hoy.",
+    err_big:"Para grupos de más de {n} personas, llámenos por favor.", err_consent:"Necesitamos su autorización para tramitar la reserva.",
+    err_send:"No se ha podido enviar. Inténtelo de nuevo o llámenos.", sending:"Enviando…",
+    contact_eyebrow:"Visítenos", contact_title:"Contacto", c_where:"Dónde estamos", c_directions:"Cómo llegar", c_hours:"Horario", c_talk:"Hable con nosotros",
+    footer_credit:'Web por <a href="https://www.eagleviewportugal.com" target="_blank" rel="noopener">Eagle View</a>'
+  }
+};
+
+/* ============================================================
+   LÓGICA
+   ============================================================ */
+let lang = "pt";
+const $ = id => document.getElementById(id);
+const t = (k, n) => (T[lang][k] || "").replace("{n}", n);
+
+function pickLang(){
+  let saved = null;
+  try { saved = localStorage.getItem("sahida_lang"); } catch(e){}
+  if (saved && T[saved]) return saved;
+  const nav = (navigator.language || "pt").slice(0,2).toLowerCase();
+  return T[nav] ? nav : "pt";
+}
+
+function slots(from, to){
+  const out = []; let [h,m] = from.split(":").map(Number); const [eh,em] = to.split(":").map(Number);
+  while (h*60+m <= eh*60+em){ out.push(String(h).padStart(2,"0")+":"+String(m).padStart(2,"0")); m+=30; if(m>=60){h++;m-=60;} }
+  return out;
+}
+
+/* ---------- Calendário ---------- */
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const cal = { view:null, date:"", time:"" };
+const todayIso = () => isoLocal(new Date());
+const maxIso = () => { const d=new Date(); d.setDate(d.getDate()+SITE.maxDaysAhead); return isoLocal(d); };
+const isClosed = iso => SITE.closedWeekdays.includes(new Date(iso+"T12:00:00").getDay());
+
+function buildCalendar(){
+  if (!cal.view){ const n=new Date(); cal.view=new Date(n.getFullYear(), n.getMonth(), 1); }
+  const y=cal.view.getFullYear(), m=cal.view.getMonth();
+  const monthName = cap(cal.view.toLocaleDateString(lang, {month:"long", year:"numeric"}));
+  const dows = [...Array(7)].map((_,i)=>new Date(2024,0,1+i).toLocaleDateString(lang,{weekday:"short"}).replace(".",""));
+  const lead = (new Date(y,m,1).getDay()+6)%7;           // semana começa à segunda
+  const days = new Date(y,m+1,0).getDate();
+  const tIso=todayIso(), mIso=maxIso();
+  const n=new Date(), first=new Date(n.getFullYear(), n.getMonth(), 1);
+  const lastView=new Date(new Date(mIso+"T12:00:00").getFullYear(), new Date(mIso+"T12:00:00").getMonth(), 1);
+  let h = `<div class="cal-head">
+      <button type="button" class="cal-nav" data-nav="-1" aria-label="${t("f_prev")}" ${cal.view<=first?"disabled":""}>‹</button>
+      <span>${monthName}</span>
+      <button type="button" class="cal-nav" data-nav="1" aria-label="${t("f_next")}" ${cal.view>=lastView?"disabled":""}>›</button>
+    </div><div class="cal-grid">${dows.map(d=>`<div class="cal-dow">${d}</div>`).join("")}`;
+  for (let i=0;i<lead;i++) h += `<span></span>`;
+  for (let d=1; d<=days; d++){
+    const iso = `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    const closed = isClosed(iso), off = iso<tIso || iso>mIso || closed;
+    const cls = ["cal-day", iso===tIso?"today":"", iso===cal.date?"sel":"", closed?"closed":""].join(" ");
+    h += `<button type="button" class="${cls}" data-date="${iso}" ${off?"disabled":""} aria-pressed="${iso===cal.date}">${d}</button>`;
+  }
+  $("cal").innerHTML = h + `</div>`;
+}
+
+function buildSlots(){
+  const box = $("slots");
+  $("pickedDate").textContent = cal.date ? cap(new Date(cal.date+"T12:00:00").toLocaleDateString(lang,{weekday:"long", day:"numeric", month:"long"})) : "";
+  if (!cal.date){ box.innerHTML = `<p class="slots-empty">${t("f_pick_date")}</p>`; return; }
+  const now = new Date(), isToday = cal.date===todayIso();
+  const minMin = now.getHours()*60 + now.getMinutes() + 60;   // hoje: só a partir de daqui a 1h
+  let h = "";
+  [["f_lunch",SITE.lunch],["f_dinner",SITE.dinner]].forEach(([k,r])=>{
+    h += `<span class="slot-label">${t(k)}</span>`;
+    slots(r.from,r.to).forEach(s=>{
+      const [hh,mm]=s.split(":").map(Number), past = isToday && hh*60+mm < minMin;
+      h += `<button type="button" class="slot ${s===cal.time?"sel":""}" data-time="${s}" ${past?"disabled":""} aria-pressed="${s===cal.time}">${s}</button>`;
+    });
+  });
+  box.innerHTML = h;
+}
+
+function buildTime(){ buildCalendar(); buildSlots(); }
+
+function resetPicker(){ cal.date=""; cal.time=""; $("f-date").value=""; $("f-time").value=""; buildTime(); }
+
+function buildPeople(){
+  const sel = $("f-people"), cur = sel.value;
+  sel.innerHTML = `<option value="">${t("f_choose")}</option>`;
+  for (let i=1;i<=SITE.maxPeople;i++){ const o=document.createElement("option"); o.value=i; o.textContent=`${i} ${i===1?t("f_person"):t("f_persons")}`; sel.appendChild(o); }
+  const o=document.createElement("option"); o.value="more"; o.textContent=t("f_more",SITE.maxPeople); sel.appendChild(o);
+  sel.value = cur;
+}
+
+function buildMenu(){
+  $("menuGrid").innerHTML = MENU.map(c=>`
+    <div class="menu-cat"><h3>${c.cat[lang]}</h3>
+      ${c.items.map(d=>`<div class="dish"><div>${d.name[lang]}<small>${d.desc[lang]||""}</small></div><span class="price">${d.price}</span></div>`).join("")}
+    </div>`).join("");
+}
+
+function buildReviews(){
+  $("ratingNum").textContent = REVIEWS.rating.toLocaleString(lang,{minimumFractionDigits:1});
+  $("ratingStars").querySelector("span").style.width = (REVIEWS.rating/5*100)+"%";
+  $("ratingCount").textContent = t("rev_count", REVIEWS.count);
+  $("reviewsLink").href = REVIEWS.url;
+  $("quotes").innerHTML = REVIEWS.quotes.map(q=>`<figure class="quote"><blockquote lang="en">“${q}”</blockquote><figcaption>${t("rev_src")}</figcaption></figure>`).join("");
+}
+
+function buildContacts(){
+  const tel = "tel:" + SITE.phone.replace(/\s/g,"");
+  ["phoneLink","phoneLink2"].forEach(id=>{ $(id).href=tel; $(id).textContent=SITE.phone; });
+  if (SITE.email){ $("emailLink").href = "mailto:"+SITE.email; $("emailLink").textContent = SITE.email; } else { $("emailLink").previousElementSibling?.remove(); $("emailLink").remove(); }
+  $("igLink").href = SITE.instagram; $("address").innerText = SITE.address; $("mapsLink").href = SITE.mapsUrl;
+  $("hoursTable").innerHTML = SITE.hours.map(h=>`<tr><td>${h.days[lang]}</td><td>${typeof h.time==="string"?h.time:h.time[lang]}</td></tr>`).join("");
+}
+
+function setLang(l){
+  lang = l; document.documentElement.lang = l;
+  try { localStorage.setItem("sahida_lang", l); } catch(e){}
+  document.querySelectorAll("[data-i18n]").forEach(el=>{ el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll("[data-i18n-html]").forEach(el=>{ el.innerHTML = t(el.dataset.i18nHtml); });
+  document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.lang===l));
+  buildTime(); buildPeople(); buildMenu(); buildReviews(); buildContacts();
+  const m = $("formMsg"); if (m.className.includes("err")) { m.className="msg"; }
+}
+
+function isoLocal(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+
+function showMsg(type, text){ const m=$("formMsg"); m.className="msg "+type; m.textContent=text; }
+
+async function onSubmit(ev){
+  ev.preventDefault();
+  const f = ev.target, data = Object.fromEntries(new FormData(f));
+  if (data.website) return; // spam
+  if (!data.name.trim() || !data.email || !data.phone.trim() || !data.date || !data.time || !data.people) return showMsg("err", t("err_fields"));
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) return showMsg("err", t("err_email"));
+  if (data.people === "more") return showMsg("err", t("err_big", SITE.maxPeople));
+  const day = new Date(data.date+"T12:00:00");
+  if (data.date < isoLocal(new Date())) return showMsg("err", t("err_past"));
+  if (SITE.closedWeekdays.includes(day.getDay())) return showMsg("err", t("err_closed"));
+  if (!$("f-consent").checked) return showMsg("err", t("err_consent"));
+
+  const btn = $("submitBtn"); btn.disabled = true; btn.textContent = t("sending");
+  try {
+    if (SITE.scriptUrl) {
+      const body = new URLSearchParams({ ...data, lang });
+      await fetch(SITE.scriptUrl, { method:"POST", mode:"no-cors", body });
+      showMsg("ok", t("ok"));
+    } else {
+      await new Promise(r=>setTimeout(r,600));
+      showMsg("ok", t("ok") + t("demo"));
+    }
+    f.reset(); resetPicker(); buildPeople();
+  } catch(e) {
+    showMsg("err", t("err_send"));
+  } finally {
+    btn.disabled = false; btn.textContent = t("f_submit");
+  }
+}
+
+(function init(){
+  const today = new Date(), max = new Date(); max.setDate(max.getDate()+SITE.maxDaysAhead);
+  $("cal").addEventListener("click", e=>{
+    const nav = e.target.closest("[data-nav]"), day = e.target.closest("[data-date]");
+    if (nav && !nav.disabled){ cal.view = new Date(cal.view.getFullYear(), cal.view.getMonth()+Number(nav.dataset.nav), 1); buildCalendar(); }
+    if (day && !day.disabled){ cal.date = day.dataset.date; $("f-date").value = cal.date; cal.time=""; $("f-time").value=""; buildTime(); }
+  });
+  $("slots").addEventListener("click", e=>{
+    const b = e.target.closest("[data-time]"); if (!b || b.disabled) return;
+    cal.time = b.dataset.time; $("f-time").value = cal.time; buildSlots();
+  });
+  $("year").textContent = today.getFullYear();
+  document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",()=>setLang(b.dataset.lang)));
+  $("bookingForm").addEventListener("submit", onSubmit);
+  const hdr = $("top"); const onScroll = ()=>hdr.classList.toggle("solid", window.scrollY > 40);
+  window.addEventListener("scroll", onScroll, {passive:true}); onScroll();
+  setLang(pickLang());
+})();
+</script>
+</body>
+</html>
