@@ -109,7 +109,7 @@ function doPost(e) {
   try {
     id = Utilities.getUuid().split('-')[0].toUpperCase();
     sheet().appendRow([id, new Date(), STATUS.PENDING, r.name, r.email, "'" + r.phone,
-      r.date, r.time, r.people, r.notes, lang, '', '', '', '']);
+      "'" + r.date, "'" + r.time, r.people, r.notes, lang, '', '', '', '']);
   } finally {
     lock.releaseLock();
   }
@@ -262,7 +262,7 @@ function findRow(id) {
   const i = ids.indexOf(String(id));
   if (i < 0) return null;
   const row = i + 2;
-  const v = sh.getRange(row, 1, 1, COLS.length).getValues()[0];
+  const v = sh.getRange(row, 1, 1, COLS.length).getDisplayValues()[0];
   const get = n => v[C[n] - 1];
   return {
     row: row,
@@ -277,7 +277,11 @@ function findRow(id) {
 
 function setCells(row, obj) {
   const sh = sheet();
-  Object.keys(obj).forEach(k => sh.getRange(row, C[k]).setValue(obj[k]));
+  Object.keys(obj).forEach(k => {
+    const v = obj[k];
+    // texto, para o Sheets não converter datas/horas (evita 20:00 → 19:23)
+    sh.getRange(row, C[k]).setValue(typeof v === 'string' && /^\d/.test(v) ? "'" + v : v);
+  });
 }
 
 /* ================== CALENDAR ================== */
@@ -372,12 +376,15 @@ function esc(v) {
 
 function asIso(v) {
   if (v instanceof Date) return Utilities.formatDate(v, Session.getScriptTimeZone(), 'yyyy-MM-dd');
-  return String(v || '');
+  const s = String(v || '').trim();
+  const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(s);
+  return m ? `${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}` : s;
 }
 
 function asTime(v) {
   if (v instanceof Date) return Utilities.formatDate(v, Session.getScriptTimeZone(), 'HH:mm');
-  return String(v || '');
+  const m = /^(\d{1,2}):(\d{2})/.exec(String(v || '').trim());
+  return m ? m[1].padStart(2,'0') + ':' + m[2] : String(v || '');
 }
 
 function fmtDate(iso) {
