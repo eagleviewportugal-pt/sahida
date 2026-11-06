@@ -331,7 +331,7 @@
 const SITE = {
   // URL da Web App do Google Apps Script (ver INSTRUCOES.md).
   // Enquanto estiver vazio, o formulário funciona em modo demonstração.
-  scriptUrl: "",
+  scriptUrl: "https://script.google.com/macros/s/AKfycbxVyb3TWGEQe6FWnnWj6b0MZAXAJ0EhlA31G077NluIC5IuFtTA1lICq3qe5lBCqNBtkQ/exec",
 
   phone: "+351 968 808 075",
   email: "",                           // vazio = não mostrar
@@ -554,7 +554,9 @@ function buildReviews(){
 function buildContacts(){
   const tel = "tel:" + SITE.phone.replace(/\s/g,"");
   ["phoneLink","phoneLink2"].forEach(id=>{ $(id).href=tel; $(id).textContent=SITE.phone; });
-  if (SITE.email){ $("emailLink").href = "mailto:"+SITE.email; $("emailLink").textContent = SITE.email; } else { $("emailLink").previousElementSibling?.remove(); $("emailLink").remove(); }
+  const em = $("emailLink");
+  if (em && SITE.email){ em.href = "mailto:"+SITE.email; em.textContent = SITE.email; }
+  else if (em){ em.previousElementSibling?.remove(); em.remove(); }
   $("igLink").href = SITE.instagram; $("address").innerText = SITE.address; $("mapsLink").href = SITE.mapsUrl;
   $("hoursTable").innerHTML = SITE.hours.map(h=>`<tr><td>${h.days[lang]}</td><td>${typeof h.time==="string"?h.time:h.time[lang]}</td></tr>`).join("");
 }
